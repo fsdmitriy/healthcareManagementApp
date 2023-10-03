@@ -1,0 +1,72 @@
+﻿@page "{id:int?}"
+@model PrescriptionModel
+@{
+    ViewData["Title"] = "Appointment";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (Model.Prescriptions == null || !Model.Prescriptions.Any())
+{
+    <p>No prescription to display.</p>
+}
+else
+{
+    @*       public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty; *@
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var prescription in Model.Prescriptions)
+            {
+                <tr>
+                    <td>@prescription.Name</td>
+                    <td>@prescription.Description</td>
+                    <td>
+                        <a asp-page="./Prescription" asp-route-id="@prescription.Id">Edit</a> |
+                        <form asp-page-handler="Delete" asp-route-id="@prescription.Id" onsubmit="return confirm('Are you sure you want to delete this prescription?');">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<hr />
+
+@if (Model.Prescription != null && Model.Prescription.Id > 0)
+{
+    <h2>Edit Prescription @Model.Prescription.Id</h2>
+}
+else // Creating a new appointment
+{
+    <h2>Create Appointment</h2>
+}
+
+<form method="post">
+
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="Prescription.Name" value="@Model.Prescription?.Name" required />
+    </div>
+
+    <div>
+        <label for="reason">Reason:</label>
+        <input type="text" id="reason" name="Prescription.Description" value="@Model.Prescription?.Description" />
+    </div>
+
+    <div>
+        <button type="submit">@((Model.Prescription != null && Model.Prescription.Id > 0) ? "Update" : "Create") Prescription</button>
+
+        <button type="button" onclick="location.href='/Prescription'">Cancel</button>
+    </div>
+</form>

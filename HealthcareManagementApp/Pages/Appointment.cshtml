@@ -1,0 +1,97 @@
+﻿@page "{id:int?}"
+@model AppointmentModel
+@{
+    ViewData["Title"] = "Appointment";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (Model.Appointments == null || !Model.Appointments.Any())
+{
+    <p>No appointments to display.</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Doctor</th>
+                <th>Location</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var appointment in Model.Appointments)
+            {
+                <tr>
+                    <td>@appointment.DateTime.Date.ToShortDateString()</td>
+                    <td>@appointment.DateTime.ToString("t")</td>
+                    <td>@appointment.DoctorName</td>
+                    <td>@appointment.Location</td>
+                    <td>
+                        <a asp-page="./Appointment" asp-route-id="@appointment.Id">Edit</a> |
+                        <form asp-page-handler="Delete" asp-route-id="@appointment.Id" onsubmit="return confirm('Are you sure you want to delete this appointment?');">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<hr />
+
+    // Editing an existing appointment
+@if (Model.Appointment != null && Model.Appointment.Id > 0)
+{
+    <h2>Edit Appointment @Model.Appointment.Id</h2>
+}
+else // Creating a new appointment
+{
+    <h2>Create Appointment</h2>
+}
+
+<form method="post">
+    <div>
+        <input id="doctor" name="Appointment.Id" value="@Model.Appointment?.Id" type="hidden" />
+    </div>
+
+    <div>
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="Appointment.DateTime.Date" value="@Model.Appointment?.DateTime.Date.ToString("yyyy-MM-dd")" required />
+    </div>
+
+    <div>
+        <label for="time">Time:</label>
+        <input type="time" id="time" name="Appointment.DateTime.TimeOfDay" value="@Model.Appointment?.DateTime.ToString("HH:mm")" required />
+    </div>
+
+    <div>
+        <label for="doctor">Doctor:</label>
+        <input type="text" id="doctor" name="Appointment.DoctorName" value="@Model.Appointment?.DoctorName" required />
+    </div>
+
+    <div>
+        <label for="reason">Reason:</label>
+        <input type="text" id="reason" name="Appointment.Reason" value="@Model.Appointment?.Reason" />
+    </div>
+
+    <div>
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="Appointment.Location" value="@Model.Appointment?.Location" required />
+    </div>
+
+    <div>
+        <label for="patientId">PatientId:</label>
+        <input type="text" id="patientId" name="Appointment.PatientId" value="@Model.Appointment?.PatientId" required />
+    </div>
+
+    <div>
+        <button type="submit">@((Model.Appointment != null && Model.Appointment.Id > 0) ? "Update" : "Create") Appointment</button>
+
+        <button type="button" onclick="location.href='/Appointment'">Cancel</button>
+    </div>
+</form>

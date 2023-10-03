@@ -20,9 +20,9 @@ public class Repository<T> : IRepository<T> where T : class
         return await _entities.FindAsync(id);
     }
 
-    public IEnumerable<T> GetAll()
+    public Task<List<T>> GetAllAsync()
     {
-        return _entities.AsEnumerable();
+        return _entities.ToListAsync();
     }
 
     public async Task AddAsync(T entity)

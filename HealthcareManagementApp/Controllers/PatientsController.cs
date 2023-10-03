@@ -16,9 +16,9 @@ public class PatientsController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Patient> GetAll()
+    public Task<List<Patient>> GetAllAsync()
     {
-        return _patientRepository.GetAll();
+        return _patientRepository.GetAllAsync();
     }
 
     [HttpGet("{id}")]

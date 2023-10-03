@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HealthcareManagementApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231002191753_InitMigration")]
-    partial class InitMigration
+    [Migration("20231003185749_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,8 +33,16 @@ namespace HealthcareManagementApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Date")
+                    b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("DoctorName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
@@ -114,7 +122,7 @@ namespace HealthcareManagementApp.Migrations
             modelBuilder.Entity("HealthcareManagementApp.Models.Appointment", b =>
                 {
                     b.HasOne("HealthcareManagementApp.Models.Patient", "Patient")
-                        .WithMany("Appointments")
+                        .WithMany()
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -125,19 +133,12 @@ namespace HealthcareManagementApp.Migrations
             modelBuilder.Entity("HealthcareManagementApp.Models.Prescription", b =>
                 {
                     b.HasOne("HealthcareManagementApp.Models.Patient", "Patient")
-                        .WithMany("Prescriptions")
+                        .WithMany()
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("HealthcareManagementApp.Models.Patient", b =>
-                {
-                    b.Navigation("Appointments");
-
-                    b.Navigation("Prescriptions");
                 });
 #pragma warning restore 612, 618
         }

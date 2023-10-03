@@ -16,9 +16,9 @@ public class PrescriptionController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Prescription> GetAll()
+    public Task<List<Prescription>> GetAll()
     {
-        return _prescriptionRepository.GetAll();
+        return _prescriptionRepository.GetAllAsync();
     }
 
     [HttpGet("{id}")]

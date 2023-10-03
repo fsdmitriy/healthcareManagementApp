@@ -9,7 +9,4 @@ public class Patient
     public string Gender { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
-
-    public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
-    public List<Prescription> Prescriptions { get; set; } = new List<Prescription>();
 }

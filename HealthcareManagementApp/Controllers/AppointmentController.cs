@@ -16,9 +16,9 @@ public class AppointmentController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Appointment> GetAll()
+    public Task<List<Appointment>> GetAll()
     {
-        return _appointmentRepository.GetAll();
+        return _appointmentRepository.GetAllAsync();
     }
 
     [HttpGet("{id}")]
