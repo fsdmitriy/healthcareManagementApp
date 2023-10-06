@@ -1,5 +1,6 @@
 ﻿using HealthcareManagementApp.Models;
 using HealthcareManagementApp.Repositories;
+using HealthcareManagementApp.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthcareManagementApp.Controllers;
@@ -9,20 +10,22 @@ namespace HealthcareManagementApp.Controllers;
 public class AppointmentController : ControllerBase
 {
     private readonly IRepository<Appointment> _appointmentRepository;
+    private readonly GoogleMapsService _googleMapsService;
 
-    public AppointmentController(IRepository<Appointment> appointmentRepository)
+    public AppointmentController(IRepository<Appointment> appointmentRepository, GoogleMapsService googleMapsService)
     {
         _appointmentRepository = appointmentRepository;
+        _googleMapsService = googleMapsService;
     }
 
     [HttpGet]
-    public Task<List<Appointment>> GetAll()
+    public async Task<IActionResult> GetAll()
     {
-        return _appointmentRepository.GetAllAsync();
+        return Ok(await _appointmentRepository.GetAllAsync());
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Appointment>> GetById(int id)
+    public async Task<IActionResult> GetById(int id)
     {
         var appointment = await _appointmentRepository.GetByIdAsync(id);
 
@@ -31,15 +34,15 @@ public class AppointmentController : ControllerBase
             return NotFound();
         }
 
-        return appointment;
+        return Ok(appointment);
     }
 
     [HttpPost]
-    public async Task<ActionResult<Appointment>> Create(Appointment appointment)
+    public async Task<IActionResult> Create(Appointment appointment)
     {
         await _appointmentRepository.AddAsync(appointment);
 
-        return CreatedAtAction(nameof(GetById), new { id = appointment.Id }, appointment);
+        return CreatedAtAction(nameof(Create), new { id = appointment.Id }, appointment);
     }
 
     [HttpPut("{id}")]
@@ -68,5 +71,21 @@ public class AppointmentController : ControllerBase
         await _appointmentRepository.DeleteAsync(id);
 
         return NoContent();
+    }
+
+    [HttpGet("{id}/coordinates")]
+    public async Task<IActionResult> GetCoordinates(int id)
+    {
+        var appointment = await _appointmentRepository.GetByIdAsync(id);
+
+        if (appointment == null)
+        {
+            return NotFound();
+        }
+
+        var address = appointment.Location;
+        var coordinates = await _googleMapsService.GetCoordinatesFromAddress(address);
+
+        return Ok(new { Latitude = coordinates.Item1, Longitude = coordinates.Item2 });
     }
 }

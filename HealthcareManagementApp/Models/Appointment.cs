@@ -7,6 +7,5 @@ public class Appointment
     public string? Reason { get; set; }
     public string DoctorName { get; set; } = string.Empty;
     public int PatientId { get; set; }
-    //public Patient? Patient { get; set; }
     public string Location { get; set; } = string.Empty;
 }

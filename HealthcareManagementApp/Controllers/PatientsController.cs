@@ -16,13 +16,13 @@ public class PatientsController : ControllerBase
     }
 
     [HttpGet]
-    public Task<List<Patient>> GetAllAsync()
+    public async Task<IActionResult> GetAllAsync()
     {
-        return _patientRepository.GetAllAsync();
+        return Ok(await _patientRepository.GetAllAsync());
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Patient>> GetById(int id)
+    public async Task<IActionResult> GetById(int id)
     {
         var patient = await _patientRepository.GetByIdAsync(id);
 
@@ -31,15 +31,15 @@ public class PatientsController : ControllerBase
             return NotFound();
         }
 
-        return patient;
+        return Ok(patient);
     }
 
     [HttpPost]
-    public async Task<ActionResult<Patient>> Create(Patient patient)
+    public async Task<IActionResult> Create(Patient patient)
     {
         await _patientRepository.AddAsync(patient);
 
-        return CreatedAtAction(nameof(GetById), new { id = patient.Id }, patient);
+        return CreatedAtAction(nameof(Create), new { id = patient.Id }, patient);
     }
 
     [HttpPut("{id}")]

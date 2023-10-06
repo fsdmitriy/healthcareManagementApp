@@ -39,7 +39,7 @@ public class Repository<T> : IRepository<T> where T : class
 
     public async Task DeleteAsync(int id)
     {
-        var entity = await GetByIdAsync(id) ?? throw new RepositoryException($"Cannot fid the item with id '{id}'");
+        var entity = await GetByIdAsync(id) ?? throw new RepositoryException($"Cannot find the item with id '{id}'");
 
         _entities.Remove(entity);
         await _context.SaveChangesAsync();
